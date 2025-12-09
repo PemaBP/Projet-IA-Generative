@@ -23,3 +23,23 @@ def match_user_to_competences(full_text):
         })
     
     return results
+
+def recommend_jobs(comp_scores):
+    job_scores = []
+    for job in REFERENTIEL["jobs"]:
+        req = job["required_competencies"]
+        relevant = [c for c in comp_scores if c["competency_id"] in req]
+
+        if relevant:
+            avg = sum(r["similarity"] for r in relevant) / len(relevant)
+        else:
+            avg = 0
+
+        job_scores.append({
+            "job_id": job["job_id"],
+            "title": job["title"],
+            "score": round(float(avg), 3)
+        })
+
+    job_scores.sort(key=lambda x: x["score"], reverse=True)
+    return job_scores[:5]
