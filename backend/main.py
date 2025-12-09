@@ -1,7 +1,12 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from fastapi import FastAPI
 from pydantic import BaseModel
 from backend.utils.matching import match_user_to_competences, recommend_jobs
 from backend.models.scoring import compute_block_scores
+from backend.utils.generative import generate_job_fiche
+
 
 app = FastAPI()
 
@@ -24,4 +29,12 @@ def analyze(user: UserInput):
         "block_scores": block_scores,
         "jobs": jobs
     }
-    
+
+class GenRequest(BaseModel):
+    job_title: str
+    profile: str
+
+@app.post("/generate_fiche")
+def generate_fiche(req: GenRequest):
+    content = generate_job_fiche(req.job_title, req.profile)
+    return {"content": content}
