@@ -4,3 +4,6 @@ scikit-learn
 pandas
 numpy
 matplotlib
+fastapi 
+uvicorn[standard]  
+python-multipart

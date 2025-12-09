@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from utils.matching import match_user_to_competences, recommend_jobs
-from models.scoring import compute_block_scores
+from backend.utils.matching import match_user_to_competences, recommend_jobs
+from backend.models.scoring import compute_block_scores
 
 app = FastAPI()
 
