@@ -33,3 +33,14 @@ if st.button("Analyser mon profil 🧠"):
             st.error("Erreur lors de l'analyse.")
     except:
         st.error("Impossible de contacter le backend 😭 Vérifie que FastAPI tourne.")
+
+if "analysis" in st.session_state:
+    result = st.session_state["analysis"]
+
+    st.header("Résultats de l'analyse")
+
+    st.subheader("Scores par blocs")
+    st.json(result["block_scores"])
+
+    st.subheader("Top métiers recommandés")
+    st.json(result["jobs"])
