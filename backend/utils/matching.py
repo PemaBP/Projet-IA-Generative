@@ -22,9 +22,6 @@ def match_user_to_competences(full_text):
             "similarity": float(score)
         })
     
-<<<<<<< HEAD
-    return results
-=======
     return results
 
 def recommend_jobs(comp_scores):
@@ -46,4 +43,3 @@ def recommend_jobs(comp_scores):
 
     job_scores.sort(key=lambda x: x["score"], reverse=True)
     return job_scores[:5]
->>>>>>> develop
