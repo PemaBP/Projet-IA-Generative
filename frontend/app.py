@@ -1,5 +1,7 @@
 import streamlit as st
 import requests
+import pandas as pd
+import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="AISCA - Orientation Médecine", layout="wide")
 
@@ -44,3 +46,15 @@ if "analysis" in st.session_state:
 
     st.subheader("Top métiers recommandés")
     st.json(result["jobs"])
+
+if "analysis" in st.session_state:
+    block_data = st.session_state["analysis"]["block_scores"]
+    df = pd.DataFrame(block_data.items(), columns=["Bloc", "Score"])
+
+    st.subheader("Radar / Bar Chart")
+    
+    fig, ax = plt.subplots()
+    ax.bar(df["Bloc"], df["Score"])
+    ax.set_ylabel("Score")
+    ax.set_title("Scores par Bloc")
+    st.pyplot(fig)
