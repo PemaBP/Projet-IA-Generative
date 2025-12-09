@@ -1,15 +1,16 @@
+# backend/utils/matching.py
 from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
 from .preprocessing import clean_text
 from ..models.embeddings import REFERENTIEL, REFERENCE_EMBEDDINGS
+from ..models.sbert_model import embed_one
 
-MODEL = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
 
-def embed_user_text(text):
+def embed_user_text(text: str):
     text = clean_text(text)
-    return MODEL.encode([text], normalize_embeddings=True)[0]
+    return embed_one(text, normalize=True)
 
-def match_user_to_competences(full_text):
+
+def match_user_to_competences(full_text: str):
     user_emb = embed_user_text(full_text)
     sims = cosine_similarity([user_emb], REFERENCE_EMBEDDINGS)[0]
 
@@ -21,8 +22,9 @@ def match_user_to_competences(full_text):
             "block_id": comp["block_id"],
             "similarity": float(score)
         })
-    
+
     return results
+
 
 def recommend_jobs(comp_scores):
     job_scores = []
@@ -33,7 +35,7 @@ def recommend_jobs(comp_scores):
         if relevant:
             avg = sum(r["similarity"] for r in relevant) / len(relevant)
         else:
-            avg = 0
+            avg = 0.0
 
         job_scores.append({
             "job_id": job["job_id"],
