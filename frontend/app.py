@@ -58,3 +58,14 @@ if "analysis" in st.session_state:
     ax.set_ylabel("Score")
     ax.set_title("Scores par Bloc")
     st.pyplot(fig)
+if "analysis" in st.session_state:
+    job = st.session_state["analysis"]["jobs"][0]
+
+    if st.button("Générer fiche métier IA"):
+        payload = {
+            "job_title": job["title"],
+            "profile": skills + " " + exp + " " + interests
+        }
+        response = requests.post("http://localhost:8000/generate_fiche", json=payload)
+        st.subheader("Fiche métier générée")
+        st.write(response.json()["content"])
