@@ -14,6 +14,7 @@ Et AISCA t’aidera à révéler **ta spécialité idéale** 🌟
 """)
 
 st.subheader("📝 Formulaire")
+domain = st.multiselect("Sélectionnez votre domaine d'activité", ["Médecine"])
 
 skills = st.text_area("Décrivez vos compétences clés")
 exp = st.text_area("Détaillez vos expériences professionnelles")
@@ -45,7 +46,7 @@ if "analysis" in st.session_state:
     st.json(result["block_scores"])
 
     st.subheader("Top métiers recommandés")
-    st.json(result["jobs"])
+    st.json(result["job_scores"])
 
 if "analysis" in st.session_state:
     block_data = st.session_state["analysis"]["block_scores"]
