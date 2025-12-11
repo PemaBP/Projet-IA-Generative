@@ -1,47 +1,86 @@
-# backend/utils/matching.py
-from sklearn.metrics.pairwise import cosine_similarity
-from .preprocessing import clean_text
-from ..models.embeddings import REFERENTIEL, REFERENCE_EMBEDDINGS
-from ..models.sbert_model import embed_one
+import numpy as np
+import json
+import os 
+# Charger referentiel
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-def embed_user_text(text: str):
-    text = clean_text(text)
-    return embed_one(text, normalize=True)
+with open(os.path.join(BASE_DIR, "data", "referentiel_jobs.json"), "r", encoding="utf-8") as f:
 
+    REFERENTIEL = json.load(f)
+ 
+competencies = REFERENTIEL["competencies"]
 
-def match_user_to_competences(full_text: str):
-    user_emb = embed_user_text(full_text)
-    sims = cosine_similarity([user_emb], REFERENCE_EMBEDDINGS)[0]
+jobs = REFERENTIEL["jobs"]
 
-    results = []
-    for comp, score in zip(REFERENTIEL["competencies"], sims):
-        results.append({
-            "competency_id": comp["competency_id"],
-            "label": comp["text"],
-            "block_id": comp["block_id"],
-            "similarity": float(score)
-        })
+blocks = REFERENTIEL["competency_blocks"]
+ 
+# Charger embeddings pré-calculés
 
-    return results
+from backend.models.embeddings import REFERENCE_EMBEDDINGS
 
+from backend.models.MedEmbed_model import embed
+ 
+ 
+def cosine(a, b):
 
-def recommend_jobs(comp_scores):
-    job_scores = []
-    for job in REFERENTIEL["jobs"]:
-        req = job["required_competencies"]
-        relevant = [c for c in comp_scores if c["competency_id"] in req]
+    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-9))
+ 
+ 
+def score_competencies(user_emb):
 
-        if relevant:
-            avg = sum(r["similarity"] for r in relevant) / len(relevant)
-        else:
-            avg = 0.0
+    scores = {}
 
-        job_scores.append({
-            "job_id": job["job_id"],
-            "title": job["title"],
-            "score": round(float(avg), 3)
-        })
+    for i, c in enumerate(competencies):
 
-    job_scores.sort(key=lambda x: x["score"], reverse=True)
-    return job_scores[:5]
+        comp_id = c["competency_id"]
+
+        scores[comp_id] = cosine(user_emb, REFERENCE_EMBEDDINGS[i])
+
+    return scores
+ 
+ 
+def score_blocks(comp_scores):
+
+    block_scores = {}
+ 
+    for c in competencies:
+
+        cid = c["competency_id"]
+
+        bid = c["block_id"]
+
+        sc = comp_scores[cid]
+ 
+        block_scores.setdefault(bid, []).append(sc)
+ 
+    # moyenne pondérée (améliore cohérence)
+
+    return {
+
+        bid: float(np.mean(vals) * (1 + 0.1 * len(vals)))
+
+        for bid, vals in block_scores.items()
+
+    }
+ 
+ 
+def score_jobs(block_scores):
+
+    job_scores = {}
+ 
+    for j in jobs:
+
+        scores = []
+
+        for cid in j["required_competencies"]:
+
+            block_id = next(c["block_id"] for c in competencies if c["competency_id"] == cid)
+
+            scores.append(block_scores.get(block_id, 0))
+ 
+        # new formula : moyenne *et* max → boost intelligence
+
+        job_scores[j["job_id"]] = float(0.7 * np.mean(scores) + 0.3 * np.max(scores))
+ 
+    return job_scores

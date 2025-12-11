@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from .sbert_model import embed_many
+from .MedEmbed_model import embed_many
 
 REF_PATH = Path(__file__).resolve().parents[1] / "data" / "referentiel_jobs.json"
 
