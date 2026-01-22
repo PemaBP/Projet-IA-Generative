@@ -3,9 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathlib import Path
 import json
+from dotenv import load_dotenv
+load_dotenv()
  
 from backend.models.MedEmbed_model import embed
 from backend.utils.preprocessing import clean_text
+from backend.utils.generative import generate_job_fiche
 from backend.utils.matching import (
     score_competencies,
     score_blocks,
@@ -127,9 +130,30 @@ def analyze(payload: UserProfile):
     block_scores = score_blocks(competence_scores)
     job_scores = score_jobs(block_scores)
 
+    #Trie des métiers
+    sorted_jobs = sorted(job_scores.items(), key=lambda x: x[1], reverse=True)
+    jobs_by_id = {j["job_id"]: j for j in REFERENTIEL["jobs"]}
+
+    top_job_id,top_score=sorted_jobs[0]
+    top_job_title=jobs_by_id.get(top_job_id,{}).get("title","Métier inconnu")
+
+    try:
+        job_fiche = generate_job_fiche(
+            job_title=top_job_title,
+            profile_summary=full_text
+        )
+    except Exception as e:
+        job_fiche = f"Erreur génération IA : {str(e)}"
+
     return {
-        "embedding": user_emb.tolist(),
-        "competence_scores": competence_scores,
-        "block_scores": block_scores,
-        "job_scores": job_scores,
+    "embedding": user_emb.tolist(),
+    "competence_scores": competence_scores,
+    "block_scores": block_scores,
+    "job_scores": job_scores,
+    "top_job": {
+            "job_id": top_job_id,
+            "title": top_job_title,
+            "score": round(float(top_score), 3),
+        },
+        "job_fiche_ai": job_fiche,
     }
