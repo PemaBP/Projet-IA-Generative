@@ -4,3 +4,13 @@
 __pycache__/
 *.py[cod]
 
+
+# Virtual envs
+env/
+.venv/
+venv/
+
+# Virtual envs
+env/
+.venv/
+venv/

@@ -32,7 +32,7 @@
     },
     {
       "block_id": "B07",
-      "name": "Recherche & Evidence-Based Practice",
+      "name": "Recherche",
       "description": "Lecture critique, méthodologie scientifique, intégration des preuves dans la pratique."
     },
     {
@@ -59,7 +59,11 @@
     { "competency_id": "C04", "text": "suivi et évaluation du patient", "block_id": "B01" },
 
     { "competency_id": "C05", "text": "gestes d'urgence", "block_id": "B02" },
+<<<<<<< HEAD
     { "competency_id": "C06", "text": "réalisation d'actes techniques", "block_id": "B02" },
+=======
+    { "competency_id": "C06", "text": "massage", "block_id": "B02"},
+>>>>>>> 0e765017 (Initial clean commit)
     { "competency_id": "C07", "text": "soins infirmiers spécialisés", "block_id": "B02" },
     { "competency_id": "C08", "text": "utilisation d'appareils médicaux", "block_id": "B02" },
 
@@ -96,7 +100,17 @@
 
     { "competency_id": "C33", "text": "adaptation de la communication à des contextes culturels variés", "block_id": "B10" },
     { "competency_id": "C34", "text": "prise en compte des dimensions psychosociales et spirituelles du patient", "block_id": "B10" },
+<<<<<<< HEAD
     { "competency_id": "C35", "text": "intégration d’approches holistiques dans la prise en charge", "block_id": "B10" }
+=======
+    { "competency_id": "C35", "text": "intégration d’approches holistiques dans la prise en charge", "block_id": "B10" },
+    { "competency_id": "C36", "text": "réalisation d'actes techniques", "block_id": "B02"},
+    { "competency_id": "C37", "text": "rééducation", "block_id": "B02"},
+    { "competency_id": "C38", "text": "mobilisation", "block_id": "B02"},
+    { "competency_id": "C39", "text": "techniques manuelles", "block_id": "B02"},
+    { "competency_id": "C40", "text": "posture", "block_id": "B02"},
+    { "competency_id": "C41", "text": "mouvement", "block_id": "B02"}
+>>>>>>> 0e765017 (Initial clean commit)
   ],
 
   "jobs": [
