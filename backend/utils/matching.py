@@ -1,86 +1,107 @@
-import numpy as np
 import json
-import os 
-# Charger referentiel
+import os
+import math
+import numpy as np
+from collections import Counter
 
+# =========================
+# Chargement référentiel
+# =========================
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-with open(os.path.join(BASE_DIR, "data", "referentiel_jobs.json"), "r", encoding="utf-8") as f:
-
+with open(
+    os.path.join(BASE_DIR, "data", "referentiel_jobs.json"),
+    "r",
+    encoding="utf-8"
+) as f:
     REFERENTIEL = json.load(f)
- 
+
 competencies = REFERENTIEL["competencies"]
-
 jobs = REFERENTIEL["jobs"]
-
 blocks = REFERENTIEL["competency_blocks"]
- 
-# Charger embeddings pré-calculés
 
+# =========================
+# IDF : rareté des compétences
+# =========================
+freq = Counter(
+    cid for j in jobs for cid in j.get("required_competencies", [])
+)
+N = len(jobs)
+
+IDF = {
+    cid: math.log((N + 1) / (freq[cid] + 1)) + 1.0
+    for cid in freq
+}
+
+# =========================
+# Embeddings
+# =========================
 from backend.models.embeddings import REFERENCE_EMBEDDINGS
-
 from backend.models.MedEmbed_model import embed
- 
- 
+
+
 def cosine(a, b):
+    # embeddings déjà normalisés → dot product suffit
+    return float(np.dot(a, b))
 
-    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-9))
- 
- 
+
+# =========================
+# 1. Score par compétence
+# =========================
 def score_competencies(user_emb):
-
     scores = {}
 
     for i, c in enumerate(competencies):
-
-        comp_id = c["competency_id"]
-
-        scores[comp_id] = cosine(user_emb, REFERENCE_EMBEDDINGS[i])
+        cid = c["competency_id"]
+        scores[cid] = cosine(user_emb, REFERENCE_EMBEDDINGS[i])
 
     return scores
- 
- 
+
+
+# =========================
+# 2. Score par bloc
+# =========================
 def score_blocks(comp_scores):
-
     block_scores = {}
- 
+
     for c in competencies:
-
         cid = c["competency_id"]
-
         bid = c["block_id"]
-
-        sc = comp_scores[cid]
- 
+        sc = comp_scores.get(cid, 0.0)
         block_scores.setdefault(bid, []).append(sc)
- 
-    # moyenne pondérée (améliore cohérence)
 
+    # moyenne simple (stable, interprétable)
     return {
-
-        bid: float(np.mean(vals) * (1 + 0.1 * len(vals)))
-
+        bid: float(np.mean(vals))
         for bid, vals in block_scores.items()
-
+        if vals
     }
- 
- 
-def score_jobs(block_scores):
 
+
+# =========================
+# 3. Score par métier
+# =========================
+def score_jobs(comp_scores, k=4):
     job_scores = {}
- 
+
     for j in jobs:
+        req = j.get("required_competencies", [])
+        if not req:
+            job_scores[j["job_id"]] = 0.0
+            continue
 
-        scores = []
+        weighted = []
+        for cid in req:
+            s = float(comp_scores.get(cid, 0.0))
+            w = float(IDF.get(cid, 1.0))
+            weighted.append(s * w)
 
-        for cid in j["required_competencies"]:
+        weighted.sort(reverse=True)
+        topk = weighted[: min(k, len(weighted))]
 
-            block_id = next(c["block_id"] for c in competencies if c["competency_id"] == cid)
+        # équilibre cohérent : compatibilité globale + pic fort
+        job_scores[j["job_id"]] = float(
+            0.7 * np.mean(topk) + 0.3 * max(weighted)
+        )
 
-            scores.append(block_scores.get(block_id, 0))
- 
-        # new formula : moyenne *et* max → boost intelligence
-
-        job_scores[j["job_id"]] = float(0.7 * np.mean(scores) + 0.3 * np.max(scores))
- 
     return job_scores

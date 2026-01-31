@@ -37,14 +37,21 @@ REF_PATH = BASE_DIR / "data" / "referentiel_jobs.json"
 with open(REF_PATH, "r", encoding="utf-8") as f:
     REFERENTIEL = json.load(f)
  
- 
+ # ✅ Mappings utiles (ajout)
+jobs_by_id = {j["job_id"]: j for j in REFERENTIEL.get("jobs", [])}
+competencies_by_id = {c["competency_id"]: c for c in REFERENTIEL.get("competencies", [])}
+blocks_by_id = {b["block_id"]: b for b in REFERENTIEL.get("competency_blocks", [])}
+
+
 # ====== SCHEMA D'ENTRÉE UTILISATEUR ======
  
 class UserProfile(BaseModel):
     skills: str        # "Décrivez vos compétences clés"
     experiences: str   # "Détaillez vos expériences professionnelles"
     interests: str    # "Quelles sont vos appétences ?"
- 
+    relation_patient: str | None = None
+    mouvement: str | None = None
+    type_activite: str | None = None
  
 # ====== ENDPOINT DE TEST ======
 @app.get("/")
@@ -60,7 +67,7 @@ def match_profile(payload: UserProfile):
     calcule l'embedding MedEmbed, puis :
       - scores par compétence
       - scores par blocs
-      - scores par métiers (avec top 5)
+      - scores par métiers (avec top 3)
     """
  
     # 1. Fusion + nettoyage du texte utilisateur
@@ -85,11 +92,11 @@ def match_profile(payload: UserProfile):
     # 5. Trier les métiers par score
     sorted_jobs = sorted(job_scores.items(), key=lambda x: x[1], reverse=True)
  
-    # 6. Récupérer les infos métiers (titre) pour le top 5
+    # 6. Récupérer les infos métiers (titre) pour le top 3
     jobs_by_id = {j["job_id"]: j for j in REFERENTIEL["jobs"]}
  
     top_jobs = []
-    for job_id, score in sorted_jobs[:5]:
+    for job_id, score in sorted_jobs[:3]:
         meta = jobs_by_id.get(job_id, {})
         top_jobs.append({
             "job_id": job_id,
@@ -128,7 +135,50 @@ def analyze(payload: UserProfile):
     # 3. Scoring
     competence_scores = score_competencies(user_emb)
     block_scores = score_blocks(competence_scores)
-    job_scores = score_jobs(block_scores)
+    job_scores = score_jobs(competence_scores)
+    PREFERENCE_BOOSTS = {
+        "relation_patient": {
+            "Suivi régulier et individualisé": [
+                "kinesitherapeute",
+                "ergotherapeute",
+                "infirmier",
+                "medecin_generaliste"
+            ],
+            "Peu de contact patient": [
+                "technicien_laboratoire",
+                "biologiste_medical",
+                "pharmacien"
+            ],
+        },
+        "mouvement": {
+            "Oui, c’est central": [
+                "kinesitherapeute",
+                "ergotherapeute",
+                "medecine_physique"
+            ],
+        },
+        "type_activite": {
+            "Activité manuelle et pratique": [
+                "kinesitherapeute",
+                "chirurgien",
+                "infirmier"
+            ],
+            "Analyse / raisonnement / données": [
+                "biologiste_medical",
+                "sante_publique"
+            ],
+        },
+    }
+
+    # Boost léger (ne remplace jamais le sémantique)
+    for field, mapping in PREFERENCE_BOOSTS.items():
+        value = getattr(payload, field, None)
+        if not value:
+            continue
+
+        for job_id in mapping.get(value, []):
+            if job_id in job_scores:
+                job_scores[job_id] *= 1.08
 
     #Trie des métiers
     sorted_jobs = sorted(job_scores.items(), key=lambda x: x[1], reverse=True)
@@ -137,6 +187,38 @@ def analyze(payload: UserProfile):
     top_job_id,top_score=sorted_jobs[0]
     top_job_title=jobs_by_id.get(top_job_id,{}).get("title","Métier inconnu")
 
+    
+    # ✅ Top 3 jobs détaillés (ajout)
+    top_jobs_detailed = []
+    for job_id, js in sorted_jobs[:3]: # a modifier plus tard pour n'avoir que le top 3
+        job_meta = jobs_by_id.get(job_id, {})
+        required = job_meta.get("required_competencies", [])
+
+        comp_list = []
+        for cid in required:
+            cmeta = competencies_by_id.get(cid, {})
+            bid = cmeta.get("block_id")
+            bname = blocks_by_id.get(bid, {}).get("name", bid)
+
+            comp_list.append({
+                "competency_id": cid,
+                "text": cmeta.get("text", ""),
+                "block_id": bid,
+                "block_name": bname,
+                "user_score": round(float(competence_scores.get(cid, 0.0)), 3),
+            })
+
+        # tri des compétences du job par match user (optionnel mais pratique)
+        comp_list.sort(key=lambda x: x["user_score"], reverse=True)
+
+        top_jobs_detailed.append({
+            "job_id": job_id,
+            "title": job_meta.get("title", "Métier inconnu"),
+            "job_score": round(float(js), 3),
+            "competencies": comp_list,
+        })
+
+    # Génération IA (inchangé)
     try:
         job_fiche = generate_job_fiche(
             job_title=top_job_title,
@@ -146,14 +228,28 @@ def analyze(payload: UserProfile):
         job_fiche = f"Erreur génération IA : {str(e)}"
 
     return {
-    "embedding": user_emb.tolist(),
-    "competence_scores": competence_scores,
-    "block_scores": block_scores,
-    "job_scores": job_scores,
-    "top_job": {
+        "embedding": user_emb.tolist(),
+        "competence_scores": competence_scores,
+        "block_scores": block_scores,
+        "job_scores": job_scores,
+        "top_job": {
             "job_id": top_job_id,
             "title": top_job_title,
             "score": round(float(top_score), 3),
         },
+        "top_jobs": top_jobs_detailed,  # ✅ ajout
         "job_fiche_ai": job_fiche,
     }
+
+class GenRequest(BaseModel):
+    job_title: str
+    profile: str
+
+
+@app.post("/generate_fiche")
+def generate_fiche(req: GenRequest):
+    try:
+        content = generate_job_fiche(req.job_title, req.profile)
+    except Exception as e:
+        content = f"Erreur génération IA : {str(e)}"
+    return {"content": content}

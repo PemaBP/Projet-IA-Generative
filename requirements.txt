@@ -9,3 +9,4 @@ uvicorn[standard]
 python-multipart
 google-generativeai
 python-dotenv
+reportlab

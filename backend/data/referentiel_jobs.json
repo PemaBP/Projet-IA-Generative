@@ -2,153 +2,146 @@
   "competency_blocks": [
     {
       "block_id": "B01",
-      "name": "Soins Cliniques",
-      "description": "Compétences liées à l'examen, au diagnostic et à la prise en charge clinique."
+      "name": "Évaluation & Raisonnement Clinique",
+      "description": "Analyse clinique, raisonnement diagnostique, évaluation fonctionnelle ou psychique."
     },
     {
       "block_id": "B02",
-      "name": "Techniques Médicales",
-      "description": "Compétences techniques liées aux gestes médicaux et paramédicaux."
+      "name": "Interventions Thérapeutiques & Techniques",
+      "description": "Mise en œuvre d’interventions thérapeutiques, techniques manuelles ou actes spécialisés."
     },
     {
       "block_id": "B03",
-      "name": "Communication & Relation Patient",
-      "description": "Compétences de communication empathique et d'accompagnement du patient."
+      "name": "Relation de Soin & Accompagnement",
+      "description": "Communication, alliance thérapeutique, accompagnement individualisé du patient."
     },
     {
       "block_id": "B04",
-      "name": "Gestion & Organisation des Soins",
-      "description": "Planification, coordination et priorisation dans un environnement pluridisciplinaire."
+      "name": "Coordination & Organisation des Parcours de Soins",
+      "description": "Travail en équipe, coordination interprofessionnelle, continuité des soins."
     },
     {
       "block_id": "B05",
-      "name": "Technologies de Santé & Données",
-      "description": "Outils numériques, gestion du dossier patient, analyse de données cliniques."
+      "name": "Technologies Médicales & Données de Santé",
+      "description": "Outils numériques, dispositifs médicaux, données cliniques et biologiques."
     },
     {
       "block_id": "B06",
-      "name": "Éthique & Déontologie",
-      "description": "Confidentialité, respect des normes, prise de décision responsable."
+      "name": "Éthique, Cadre Professionnel & Responsabilité",
+      "description": "Déontologie, responsabilités professionnelles, cadre légal."
     },
     {
       "block_id": "B07",
-      "name": "Recherche & Evidence-Based Practice",
-      "description": "Lecture critique, méthodologie scientifique, intégration des preuves dans la pratique."
+      "name": "Recherche & Pratiques Fondées sur les Preuves",
+      "description": "Approche scientifique, analyse critique, amélioration des pratiques."
     },
     {
       "block_id": "B08",
-      "name": "Prévention & Santé Publique",
-      "description": "Promotion de la santé, actions de prévention, analyse des facteurs populationnels."
+      "name": "Prévention, Éducation & Promotion de la Santé",
+      "description": "Prévention, éducation thérapeutique, maintien de l’autonomie."
     },
     {
       "block_id": "B09",
-      "name": "Gestion de Crise & Urgences",
-      "description": "Réactivité en situation aiguë, interventions d’urgence, coordination rapide."
+      "name": "Urgences & Situations Critiques",
+      "description": "Gestion de situations aiguës, urgences vitales, stress clinique."
     },
     {
       "block_id": "B10",
-      "name": "Compétences Interculturelles & Approche Holistique",
-      "description": "Adaptation culturelle, compréhension globale du patient, prise en compte psychosociale."
+      "name": "Approche Globale, Psychosociale & Fonctionnelle",
+      "description": "Vision globale du patient, dimensions fonctionnelles, psychosociales et environnementales."
     }
   ],
 
   "competencies": [
-    { "competency_id": "C01", "text": "examen clinique", "block_id": "B01" },
-    { "competency_id": "C02", "text": "diagnostic médical", "block_id": "B01" },
-    { "competency_id": "C03", "text": "prescription thérapeutique", "block_id": "B01" },
-    { "competency_id": "C04", "text": "suivi et évaluation du patient", "block_id": "B01" },
+    { "competency_id": "C01", "text": "réalisation d’une évaluation clinique structurée", "block_id": "B01" },
+    { "competency_id": "C02", "text": "raisonnement diagnostique médical", "block_id": "B01" },
+    { "competency_id": "C03", "text": "évaluation fonctionnelle du mouvement", "block_id": "B01" },
+    { "competency_id": "C04", "text": "évaluation psychique et clinique du patient", "block_id": "B01" },
 
-    { "competency_id": "C05", "text": "gestes d'urgence", "block_id": "B02" },
-    { "competency_id": "C06", "text": "réalisation d'actes techniques", "block_id": "B02" },
-    { "competency_id": "C07", "text": "soins infirmiers spécialisés", "block_id": "B02" },
-    { "competency_id": "C08", "text": "utilisation d'appareils médicaux", "block_id": "B02" },
+    { "competency_id": "C05", "text": "réalisation d’actes de soins infirmiers techniques", "block_id": "B02" },
+    { "competency_id": "C06", "text": "rééducation fonctionnelle et motrice", "block_id": "B02" },
+    { "competency_id": "C07", "text": "mobilisation articulaire et techniques manuelles thérapeutiques", "block_id": "B02" },
+    { "competency_id": "C08", "text": "actes techniques biologiques et analyses de laboratoire", "block_id": "B02" },
+    { "competency_id": "C09", "text": "interventions psychothérapeutiques cliniques", "block_id": "B02" },
 
-    { "competency_id": "C09", "text": "communication empathique", "block_id": "B03" },
-    { "competency_id": "C10", "text": "conduite d'entretien clinique", "block_id": "B03" },
-    { "competency_id": "C11", "text": "éducation thérapeutique", "block_id": "B03" },
-    { "competency_id": "C12", "text": "gestion de situations sensibles", "block_id": "B03" },
+    { "competency_id": "C10", "text": "communication empathique et relation de confiance", "block_id": "B03" },
+    { "competency_id": "C11", "text": "conduite d’entretiens cliniques approfondis", "block_id": "B03" },
+    { "competency_id": "C12", "text": "accompagnement thérapeutique individualisé", "block_id": "B03" },
 
-    { "competency_id": "C13", "text": "planification des soins", "block_id": "B04" },
-    { "competency_id": "C14", "text": "coordination interprofessionnelle", "block_id": "B04" },
-    { "competency_id": "C15", "text": "gestion des priorités", "block_id": "B04" },
-    { "competency_id": "C16", "text": "respect des protocoles et normes", "block_id": "B04" },
+    { "competency_id": "C13", "text": "coordination avec les professionnels de santé", "block_id": "B04" },
+    { "competency_id": "C14", "text": "organisation du parcours de soins du patient", "block_id": "B04" },
 
-    { "competency_id": "C17", "text": "maîtrise du dossier patient informatisé", "block_id": "B05" },
-    { "competency_id": "C18", "text": "interprétation de données biologiques", "block_id": "B05" },
-    { "competency_id": "C19", "text": "utilisation d'outils de télémédecine", "block_id": "B05" },
-    { "competency_id": "C20", "text": "analyse de données cliniques", "block_id": "B05" },
+    { "competency_id": "C15", "text": "utilisation du dossier patient informatisé", "block_id": "B05" },
+    { "competency_id": "C16", "text": "interprétation de données biologiques et cliniques", "block_id": "B05" },
+    { "competency_id": "C17", "text": "usage de dispositifs médicaux et outils numériques", "block_id": "B05" },
+    { "competency_id": "C18", "text": "pratiques de télémédecine et suivi à distance", "block_id": "B05" },
 
-    { "competency_id": "C21", "text": "respect de la confidentialité et du secret professionnel", "block_id": "B06" },
-    { "competency_id": "C22", "text": "prise de décision éthique en situation complexe", "block_id": "B06" },
-    { "competency_id": "C23", "text": "application des normes déontologiques professionnelles", "block_id": "B06" },
+    { "competency_id": "C19", "text": "respect du cadre déontologique et légal", "block_id": "B06" },
+    { "competency_id": "C20", "text": "prise de décision éthique en situation complexe", "block_id": "B06" },
 
-    { "competency_id": "C24", "text": "lecture critique d’articles scientifiques", "block_id": "B07" },
-    { "competency_id": "C25", "text": "utilisation de données probantes dans la pratique clinique", "block_id": "B07" },
-    { "competency_id": "C26", "text": "participation à des projets de recherche clinique", "block_id": "B07" },
+    { "competency_id": "C21", "text": "analyse critique de la littérature scientifique", "block_id": "B07" },
+    { "competency_id": "C22", "text": "intégration des données probantes dans la pratique", "block_id": "B07" },
 
-    { "competency_id": "C27", "text": "conception d’actions de prévention", "block_id": "B08" },
-    { "competency_id": "C28", "text": "éducation à la santé auprès de différents publics", "block_id": "B08" },
-    { "competency_id": "C29", "text": "analyse des déterminants de santé d’une population", "block_id": "B08" },
+    { "competency_id": "C23", "text": "actions de prévention et d’éducation à la santé", "block_id": "B08" },
+    { "competency_id": "C24", "text": "prévention des troubles fonctionnels et de l’autonomie", "block_id": "B08" },
 
-    { "competency_id": "C30", "text": "réalisation de protocoles d’urgence vitale", "block_id": "B09" },
-    { "competency_id": "C31", "text": "gestion du stress en situation aiguë", "block_id": "B09" },
-    { "competency_id": "C32", "text": "coordination rapide avec les équipes d’intervention", "block_id": "B09" },
+    { "competency_id": "C25", "text": "gestion des urgences vitales", "block_id": "B09" },
+    { "competency_id": "C26", "text": "gestion du stress en situation critique", "block_id": "B09" },
 
-    { "competency_id": "C33", "text": "adaptation de la communication à des contextes culturels variés", "block_id": "B10" },
-    { "competency_id": "C34", "text": "prise en compte des dimensions psychosociales et spirituelles du patient", "block_id": "B10" },
-    { "competency_id": "C35", "text": "intégration d’approches holistiques dans la prise en charge", "block_id": "B10" }
+    { "competency_id": "C27", "text": "prise en compte des dimensions psychosociales du patient", "block_id": "B10" },
+    { "competency_id": "C28", "text": "approche globale et fonctionnelle du patient", "block_id": "B10" }
   ],
 
   "jobs": [
     {
       "job_id": "J01",
       "title": "Médecin Généraliste",
-      "required_competencies": ["C01", "C02", "C03", "C04", "C09", "C17", "C21", "C25"]
+      "required_competencies": ["C01", "C02", "C14", "C15", "C19", "C22"]
     },
     {
       "job_id": "J02",
       "title": "Infirmier Diplômé d'État",
-      "required_competencies": ["C05", "C07", "C08", "C11", "C13", "C15", "C21", "C31"]
+      "required_competencies": ["C05", "C10", "C13", "C25", "C26"]
     },
     {
       "job_id": "J03",
       "title": "Sage-Femme",
-      "required_competencies": ["C01", "C06", "C07", "C11", "C12", "C14", "C22", "C27"]
+      "required_competencies": ["C01", "C05", "C12", "C20", "C23"]
     },
     {
       "job_id": "J04",
       "title": "Aide-Soignant",
-      "required_competencies": ["C07", "C08", "C09", "C11", "C15", "C33"]
+      "required_competencies": ["C05", "C10", "C12"]
     },
     {
       "job_id": "J05",
       "title": "Pharmacien",
-      "required_competencies": ["C02", "C03", "C11", "C17", "C18", "C23", "C25"]
+      "required_competencies": ["C02", "C16", "C19", "C22"]
     },
     {
       "job_id": "J06",
       "title": "Kinésithérapeute",
-      "required_competencies": ["C01", "C04", "C06", "C09", "C11", "C12", "C34"]
+      "required_competencies": ["C03", "C06", "C07", "C12", "C24", "C28"]
     },
     {
       "job_id": "J07",
       "title": "Technicien de Laboratoire",
-      "required_competencies": ["C06", "C08", "C16", "C18", "C20", "C26"]
+      "required_competencies": ["C08", "C16", "C17", "C21"]
     },
     {
       "job_id": "J08",
       "title": "Psychologue Clinicien",
-      "required_competencies": ["C09", "C10", "C11", "C12", "C04", "C34", "C35"]
+      "required_competencies": ["C04", "C09", "C11", "C27"]
     },
     {
       "job_id": "J09",
       "title": "Ergothérapeute",
-      "required_competencies": ["C01", "C04", "C11", "C12", "C14", "C33", "C35"]
+      "required_competencies": ["C03", "C06", "C12", "C24", "C28"]
     },
     {
       "job_id": "J10",
       "title": "Professionnel de Télémédecine",
-      "required_competencies": ["C02", "C09", "C17", "C19", "C20", "C14", "C22", "C33"]
+      "required_competencies": ["C02", "C15", "C18", "C13"]
     }
   ]
 }

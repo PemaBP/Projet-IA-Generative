@@ -1,14 +1,17 @@
-def compute_block_scores(results):
+def compute_block_scores(results, top_k=3):
     block_scores = {}
 
     for item in results:
         block = item["block_id"]
-        sim = item["similarity"]
+        sim = float(item.get("similarity", 0.0))
         block_scores.setdefault(block, []).append(sim)
 
-    averaged = {
-        block: round(sum(vals)/len(vals), 3)
-        for block, vals in block_scores.items()
-    }
+    averaged = {}
+    for block, vals in block_scores.items():
+        if not vals:
+            continue   
+        top_vals = sorted(vals, reverse=True)[:top_k]
+        averaged[block] = sum(top_vals) / len(top_vals)
+    
 
     return averaged
