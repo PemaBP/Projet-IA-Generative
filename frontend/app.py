@@ -147,7 +147,7 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
 
     colA, colB = st.columns([1, 1])
     with colA:
-        st.button("⬅< Modifier mes infos", on_click=go_to, args=(1,))
+        st.button("⬅ Modifier mes infos", on_click=go_to, args=(1,))
     with colB:
         if st.button("🧹 Réinitialiser l’analyse"):
             st.session_state.pop("analysis", None)
@@ -155,6 +155,8 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
 
     st.subheader("📝 Formulaire")
     domain = st.multiselect("Sélectionnez votre domaine d'étude", ["Médecine"])
+
+    st.info("Si vous souhaitez obtenir un résultat pertinent et précis, soyeux clair et détaillé dans vos réponses.")
 
     skills = st.text_area("Décrivez vos compétences clés *")
     exp = st.text_area("Détaillez vos expériences professionnelles *")
@@ -261,18 +263,34 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
         st.divider()
         st.subheader(f"Top métiers recommandés pour {prenom}")
 
+        import numpy as np
+
+
         if not top_jobs:
             st.warning("Le backend n'a pas renvoyé de Top 3 (champ 'top_jobs').")
         else:
-            top_rows = [{"Métier": j.get("title", "Métier inconnu"), "Score": j.get("job_score", 0.0)} for j in top_jobs]
+            raw_scores = [j.get("job_score", 0.0) for j in top_jobs]
+            max_score = max(raw_scores) if raw_scores else 1.0
+
+            top_rows = []
+            for j in top_jobs:
+                raw_score = j.get("job_score", 0.0)
+                percent_score = (raw_score / max_score) if max_score > 0 else 0.0
+
+                top_rows.append({
+                    "Métier": j.get("title", "Métier inconnu"),
+                    "Score": round(percent_score, 1)
+                })
+
             st.dataframe(pd.DataFrame(top_rows), width="stretch")
 
+            # --- Détail par métier ---
             for j in top_jobs:
                 title = j.get("title", "Métier inconnu")
-                score = j.get("job_score", 0.0)
+                raw_score = j.get("job_score", 0.0)
                 comps = j.get("competencies", [])
 
-                with st.expander(f"Compétences associées — {title} (score {score})"):
+                with st.expander(f"Compétences associées — {title} (score {raw_score})"):
                     if comps:
                         df_comps = pd.DataFrame(comps)
                         cols = [c for c in ["competency_id", "text", "block_name", "block_id", "user_score"] if c in df_comps.columns]
@@ -280,13 +298,34 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
                     else:
                         st.info("Aucune compétence détaillée renvoyée pour ce métier.")
 
+                # Exemple : top 3 compétences du métier
+                    top_comps = comps[:3]
+
+                    labels = [c["text"] for c in top_comps]
+                    values = [c["user_score"] for c in top_comps]
+
+                    angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False).tolist()
+                    values += values[:1]
+                    angles += angles[:1]
+
+                    fig, ax = plt.subplots(subplot_kw=dict(polar=True))
+                    ax.plot(angles, values, linewidth=2)
+                    ax.fill(angles, values, alpha=0.25)
+                    ax.set_thetagrids(np.degrees(angles[:-1]), labels)
+                    ax.set_ylim(0, 1)
+
+                    col_left, col_center, col_right = st.columns([1, 2, 1])
+
+                    with col_center:
+                        st.pyplot(fig)
+
             st.divider()
-            st.subheader("✨ Générer une fiche métier (Gemini)")
+            st.subheader("Générer une fiche métier")
 
             top_titles = [j.get("title", "Métier inconnu") for j in top_jobs]
             selected_job = st.radio("Choisis un métier parmi ton top 3", options=top_titles)
 
-            if st.button("Générer la fiche métier (Gemini)"):
+            if st.button("Générer la fiche métier"):
                 if not full_text:
                     st.warning("Remplis au moins un champ (compétences / expériences / intérêts) pour générer une fiche.")
                 else:
