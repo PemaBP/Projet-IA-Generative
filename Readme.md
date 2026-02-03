@@ -1,5 +1,10 @@
 # PROJET IA GEN
 
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Google Gemini](https://img.shields.io/badge/AI-Google%20Gemini-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white)](https://aistudio.google.com/)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+
 ## 📌 Présentation du projet
 
 Ce projet s’inscrit dans le cadre du **PROJET IA GEN** et vise à exploiter des techniques d’**IA générative et d’analyse sémantique** pour analyser, scorer et discriminer des compétences et métiers à partir de données textuelles.
@@ -15,9 +20,9 @@ L’objectif principal est d’aider à la **prise de décision** via des scores
 
 ## 🧱 Prérequis
 
-- Python **3.9+** recommandé  
-- `pip`
-- Une clé API **Google Gemini**
+*   Python **3.9+** recommandé
+*   Gestionnaire de paquets `pip`
+*   Une clé API **Google Gemini** valide
 
 ---
 
@@ -28,63 +33,66 @@ L’objectif principal est d’aider à la **prise de décision** via des scores
 ```bash
 git clone <url-du-repo>
 cd PROJET-IA-GEN
+```
 
-2️⃣ Créer et activer un environnement virtuel Python
-Windows
+### 2️⃣ Créer et activer un environnement virtuel
+
+**Windows :**
+```bash
 python -m venv venv
 venv\Scripts\activate
+```
 
-macOS / Linux
+**macOS / Linux :**
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
+### 3️⃣ Installer les dépendances
 
-3️⃣ Installer les dépendances
-
-Toutes les librairies nécessaires au projet sont listées dans le fichier requirements.txt.
-
+```bash
 pip install -r requirements.txt
+```
 
+### 4️⃣ Configuration des variables d'environnement
 
-4️⃣ Créer le fichier .env
-
-À la racine du projet, créer un fichier .env et y renseigner la clé API Gemini :
-
+À la racine du projet, créez un fichier `.env` :
+```env
 GEMINI_API_KEY=VOTRE_CLE_API_ICI
-
+```
 
 ⚠️ Le fichier .env ne doit pas être versionné (présent dans le .gitignore).
 
+### 5️⃣ Obtenir une clé API Gemini
 
-5️⃣ Créer une clé API Gemini
+1.  Rendez-vous sur [Google AI Studio](https://aistudio.google.com/app/apikey).
+2.  Générez une nouvelle clé API.
+3.  Copiez-la dans votre fichier `.env`.
 
-Se rendre sur Google AI Studio :
-https://aistudio.google.com/app/apikey
+---
 
-Créer une nouvelle clé API
+## ▶️ Lancement du projet
 
-Copier la clé générée dans le fichier .env
+### 🔹 Backend (FastAPI)
 
-
-▶️ Lancer le projet
-🔹 Lancer l’API backend (FastAPI)
-
-Depuis la racine du projet :
+```bash
 uvicorn backend.main:app --reload
+```
+*   **URL :** `http://127.0.0.1:8000`
+*   **Swagger UI :** `http://127.0.0.1:8000/docs`
 
-    API accessible sur : http://127.0.0.1:8000
+### 🔹 Frontend (Streamlit)
 
-    Documentation Swagger : http://127.0.0.1:8000/docs
-
-🔹 Lancer l’interface Streamlit
-
-Dans un second terminal (environnement virtuel activé) :
-
+```bash
 streamlit run frontend/app.py
-L’interface sera accessible à l’adresse indiquée dans le terminal (généralement http://localhost:8501
-).
+```
+*   **URL :** `http://localhost:8501`
 
-📂 Structure du projet
+---
+
+## 📂 Structure du projet
+```text
 PROJET-IA-GEN/
 │
 ├── backend/            # API FastAPI
@@ -97,3 +105,11 @@ PROJET-IA-GEN/
 ├── .env                # Variables d’environnement (non versionné)
 ├── .gitignore
 └── README.md
+```
+
+---
+
+## 👥 Contributeurs
+
+*   **Équipe Projet IA GEN** - *EFREI Paris*
+*   Péma BELISE-PERREARD et Aurélien DIOGNE BOUGUENG
