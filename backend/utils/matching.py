@@ -4,9 +4,9 @@ import math
 import numpy as np
 from collections import Counter
 
-# =========================
-# Chargement référentiel
-# =========================
+
+# Chargement du référentiel
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 with open(
@@ -20,9 +20,9 @@ competencies = REFERENTIEL["competencies"]
 jobs = REFERENTIEL["jobs"]
 blocks = REFERENTIEL["competency_blocks"]
 
-# =========================
-# IDF : rareté des compétences
-# =========================
+
+# compétences rares
+
 freq = Counter(
     cid for j in jobs for cid in j.get("required_competencies", [])
 )
@@ -33,21 +33,21 @@ IDF = {
     for cid in freq
 }
 
-# =========================
+
 # Embeddings
-# =========================
+
 from backend.models.embeddings import REFERENCE_EMBEDDINGS
 from backend.models.MedEmbed_model import embed
 
 
 def cosine(a, b):
-    # embeddings déjà normalisés → dot product suffit
+    # embeddings déjà normalisés 
     return float(np.dot(a, b))
 
 
-# =========================
+
 # 1. Score par compétence
-# =========================
+
 def score_competencies(user_emb):
     scores = {}
 
@@ -58,9 +58,9 @@ def score_competencies(user_emb):
     return scores
 
 
-# =========================
+
 # 2. Score par bloc
-# =========================
+
 def score_blocks(comp_scores):
     block_scores = {}
 
@@ -78,9 +78,9 @@ def score_blocks(comp_scores):
     }
 
 
-# =========================
+
 # 3. Score par métier
-# =========================
+
 def score_jobs(comp_scores, k=4):
     job_scores = {}
 

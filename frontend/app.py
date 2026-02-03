@@ -46,18 +46,18 @@ def build_pdf_bytes(title: str, content_md: str) -> bytes:
     doc.build(story)
     return buffer.getvalue()
 
-# -----------------------
-# Helpers : état & navigation
-# -----------------------
+
+# état & navigation
+
 if "step" not in st.session_state:
     st.session_state.step = 0  # 0 = welcome, 1 = infos, 2 = formulaire+résultats
 
 def go_to(step: int):
     st.session_state.step = step
 
-# -----------------------
-# (Optionnel) Charger référentiel pour noms des blocs
-# -----------------------
+
+#Chargement du référentiel pour noms des blocs
+
 BLOCKS_BY_ID = {}
 try:
     ref_path = Path(__file__).resolve().parents[1] / "backend" / "data" / "referentiel_jobs.json"
@@ -67,9 +67,9 @@ try:
 except Exception:
     BLOCKS_BY_ID = {}
 
-# =======================
-# STEP 0 — Welcome
-# =======================
+
+# Page de d'accueil
+
 if st.session_state.step == 0:
     st.title("Bienvenue sur AISCA ")
 
@@ -95,9 +95,9 @@ et de l’orientation en santé.
 
     st.button("Commencer", on_click=go_to, args=(1,))
 
-# =======================
-# STEP 1 — Infos perso
-# =======================
+
+# Information personnelle
+
 elif st.session_state.step == 1:
     st.title("Décris-toi brièvement")
 
@@ -127,9 +127,9 @@ elif st.session_state.step == 1:
         if not can_continue:
             st.caption("⚠️ Mets au moins ton prénom + ton établissement pour continuer.")
 
-# =======================
-# STEP 2 — Ton formulaire existant + résultats
-# =======================
+
+# formulaire
+
 else:
     prenom = st.session_state.get("prenom", "toi")
     age = st.session_state.get("age", "")
@@ -191,7 +191,7 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
         ]
     )
 
-    # ✅ Validation : champs texte obligatoires
+    # champs texte obligatoires
     can_analyze = bool(skills.strip()) and bool(exp.strip()) and bool(interests.strip())
 
     if not can_analyze:
@@ -203,9 +203,9 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
 
     
 
-    # -----------------------
+    
     # Analyse du profil
-    # -----------------------
+    
     if st.button("Analyser mon profil ", disabled=not can_analyze):
         if not can_analyze:
             st.warning("Remplis tous les champs texte pour lancer l’analyse.")
@@ -235,9 +235,9 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
                 f"Détail : {e}"
             )
 
-    # -----------------------
+    
     # Affichage des résultats
-    # -----------------------
+    
     if "analysis" in st.session_state:
         result = st.session_state["analysis"]
 
@@ -257,7 +257,7 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
         else:
             st.warning("Aucun score de bloc retourné par le backend.")
 
-        # Top jobs détaillés si ton backend renvoie top_jobs (recommandé)
+        # Top jobs détaillés 
         top_jobs = result.get("top_jobs", [])
 
         st.divider()
@@ -284,7 +284,7 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
 
             st.dataframe(pd.DataFrame(top_rows), width="stretch")
 
-            # --- Détail par métier ---
+            # Détail par métier
             for j in top_jobs:
                 title = j.get("title", "Métier inconnu")
                 raw_score = j.get("job_score", 0.0)
@@ -298,7 +298,7 @@ Passons à la partie où tu nous donnes plus de détails sur toi dans le domaine
                     else:
                         st.info("Aucune compétence détaillée renvoyée pour ce métier.")
 
-                # Exemple : top 3 compétences du métier
+                # top 3 compétences du métier
                     top_comps = comps[:3]
 
                     labels = [c["text"] for c in top_comps]

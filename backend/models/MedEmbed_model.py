@@ -18,7 +18,7 @@ class MedEmbed:
             embs = embs / norms
         return embs
  
-# Instance globale du modèle (évite rechargement)
+# Instance globale du modèle ( pour éviter le rechargement)
 sbert = MedEmbed()
  
 def embed(text, normalize=True):

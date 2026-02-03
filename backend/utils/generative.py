@@ -8,17 +8,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# -----------------------
+
 # Configuration Gemini
-# -----------------------
+
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# ✅ Déclaration du modèle (CE QUI MANQUAIT)
+# Déclaration du modèle
 model = genai.GenerativeModel("gemini-2.5-flash")
 
-# -----------------------
+
 # Génération fiche métier
-# -----------------------
+
 def generate_job_fiche(job_title: str, profile_summary: str) -> str:
     # 1) Vérifier le cache
     cached = get_cached_fiche(job_title)

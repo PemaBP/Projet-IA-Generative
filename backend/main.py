@@ -30,20 +30,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
  
-# Charger le référentiel pour récupérer les titres de métiers, blocs, etc.
+# Chargement du référentiel pour récupérer les titres de métiers, blocs, etc.
 BASE_DIR = Path(__file__).resolve().parent
 REF_PATH = BASE_DIR / "data" / "referentiel_jobs.json"
  
 with open(REF_PATH, "r", encoding="utf-8") as f:
     REFERENTIEL = json.load(f)
  
- # ✅ Mappings utiles (ajout)
+ # Mappings utiles (ajout)
 jobs_by_id = {j["job_id"]: j for j in REFERENTIEL.get("jobs", [])}
 competencies_by_id = {c["competency_id"]: c for c in REFERENTIEL.get("competencies", [])}
 blocks_by_id = {b["block_id"]: b for b in REFERENTIEL.get("competency_blocks", [])}
 
 
-# ====== SCHEMA D'ENTRÉE UTILISATEUR ======
+# SCHEMA D'ENTRÉE UTILISATEUR
  
 class UserProfile(BaseModel):
     skills: str        # "Décrivez vos compétences clés"
@@ -53,13 +53,13 @@ class UserProfile(BaseModel):
     mouvement: str | None = None
     type_activite: str | None = None
  
-# ====== ENDPOINT DE TEST ======
+# ENDPOINT DE TEST 
 @app.get("/")
 def root():
     return {"message": "AISCA backend is running 🚀"}
  
  
-# ====== ENDPOINT PRINCIPAL : MATCHING PROFIL → MÉTIERS ======
+# ENDPOINT PRINCIPAL : MATCHING PROFIL → MÉTIERS
 @app.post("/match_profile")
 def match_profile(payload: UserProfile):
     """
@@ -104,7 +104,7 @@ def match_profile(payload: UserProfile):
             "score": round(float(score), 3),
         })
  
-    # 7. Renvoyer un truc bien structuré pour ton front / debug
+    # 7. Renvoit un truc bien structuré pour le front / debug
     return {
         "scores_par_blocs": {
             bid: round(float(s), 3) for bid, s in sorted_blocks
@@ -170,7 +170,7 @@ def analyze(payload: UserProfile):
         },
     }
 
-    # Boost léger (ne remplace jamais le sémantique)
+    # Boost léger (Nb: on ne remplace jamais le sémantique)
     for field, mapping in PREFERENCE_BOOSTS.items():
         value = getattr(payload, field, None)
         if not value:
@@ -188,7 +188,7 @@ def analyze(payload: UserProfile):
     top_job_title=jobs_by_id.get(top_job_id,{}).get("title","Métier inconnu")
 
     
-    # ✅ Top 3 jobs détaillés (ajout)
+    # Top 3 jobs détaillés
     top_jobs_detailed = []
     for job_id, js in sorted_jobs[:3]: # a modifier plus tard pour n'avoir que le top 3
         job_meta = jobs_by_id.get(job_id, {})
@@ -208,7 +208,7 @@ def analyze(payload: UserProfile):
                 "user_score": round(float(competence_scores.get(cid, 0.0)), 3),
             })
 
-        # tri des compétences du job par match user (optionnel mais pratique)
+        # tri des compétences du job par match user 
         comp_list.sort(key=lambda x: x["user_score"], reverse=True)
 
         top_jobs_detailed.append({
@@ -218,7 +218,7 @@ def analyze(payload: UserProfile):
             "competencies": comp_list,
         })
 
-    # Génération IA (inchangé)
+    # Génération IA
     try:
         job_fiche = generate_job_fiche(
             job_title=top_job_title,
